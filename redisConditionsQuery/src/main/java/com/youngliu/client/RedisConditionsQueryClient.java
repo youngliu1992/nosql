@@ -6,6 +6,10 @@ import redis.clients.jedis.Jedis;
 
 import java.util.*;
 
+/**
+ * redis 多条件查询
+ */
+
 public class RedisConditionsQueryClient {
     static final String TABLE_NAME_CAR = "TABLE_NAME_CAR";
     static final String CAR_CORLOR_RED = "CAR_CORLOR_RED";
@@ -18,14 +22,19 @@ public class RedisConditionsQueryClient {
         Jedis jedis = new Jedis("127.0.0.1", 6379);
         new RedisConditionsQueryClient().mockProductCars(jedis);
         //查询1.9的红色车
-        //new RedisConditionsQueryClient().mockAnd(jedis,CAR_CORLOR_RED,CAR_PRICE_1p9);
+        new RedisConditionsQueryClient().mockAnd(jedis,CAR_CORLOR_RED,CAR_PRICE_1p9);
         //查询1.9车
-        //new RedisConditionsQueryClient().mockAnd(jedis,CAR_PRICE_1p9);
+        new RedisConditionsQueryClient().mockAnd(jedis,CAR_PRICE_1p9);
         //查询1.9或者黄色车
         new RedisConditionsQueryClient().mockOr(jedis,CAR_CORLOR_YELLOW,CAR_PRICE_1p9);
 
     }
 
+    /**
+     * AND 条件查询
+     * @param jedis
+     * @param conditions
+     */
     public void mockAnd(Jedis jedis,String... conditions){
         Set<String> carIds = jedis.sinter(conditions);
         for(String carId : carIds) {
@@ -34,6 +43,11 @@ public class RedisConditionsQueryClient {
         }
     }
 
+    /**
+     * OR 条件查询
+     * @param jedis
+     * @param conditions
+     */
     public void mockOr(Jedis jedis,String... conditions){
         Set<String> carIds = jedis.sunion(conditions);
         for(String carId : carIds) {
@@ -84,7 +98,6 @@ public class RedisConditionsQueryClient {
             jedis.sadd(CAR_PRICE_2p0,i+"");
             map.put(i+"", JSON.toJSONString(car));
         }
-
         jedis.hmset(TABLE_NAME_CAR,map);
         return map;
     }

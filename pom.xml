@@ -10,6 +10,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>redisConditionsQuery</module>
+        <module>redisLocker</module>
     </modules>
     <dependencies>
         <dependency>
